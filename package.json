@@ -1,0 +1,42 @@
+{
+    "name": "wave",
+    "productName": "Wave",
+    "version": "1.0.0",
+    "description": "Mouse gestures",
+    "build": {
+        "appId": "com.quantum.wave",
+        "mac": {
+            "target": "mas",
+            "icon": "assets/icon.png",
+            "darkModeSupport": true
+        }
+    },
+    "scripts": {
+        "start": "electron .",
+        "dist-mac": "electron-builder -m"
+    },
+    "main": "mjs/main.js",
+    "author": "William Roque",
+    "email": "William Roque <william.roque@ethosgroup.com.br>",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^5.0.13",
+        "electron-builder": "^22.8.1"
+    },
+    "dependencies": {
+        "fix-path": "^2.1.0",
+        "iohook": "file:iohook",
+        "robotjs": "^0.6.0"
+    },
+    "iohook": {
+        "targets": [
+            "electron-70"
+        ],
+        "platforms": [
+            "darwin"
+        ],
+        "arches": [
+            "x64"
+        ]
+    }
+}
