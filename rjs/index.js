@@ -9,7 +9,7 @@ const fs = require('fs');
 
 const settingsPath = path.join(app.getPath('home'), 'combinations.json');
 const scriptPath = path.join(app.getPath('home'), 'active.scpt');
-const settingsCombination = 'DOWN+RIGHT+DOWN';
+const settingsCombination = 'RIGHT+DOWN+LEFT+DOWN';
 
 const gestureCanvas = document.querySelector('#gesture-canvas');
 const ctx = gestureCanvas.getContext('2d');

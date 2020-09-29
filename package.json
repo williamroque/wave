@@ -7,13 +7,14 @@
         "appId": "com.quantum.wave",
         "mac": {
             "target": "mas",
-            "icon": "assets/icon.png",
+            "icon": "assets/icon.icns",
             "darkModeSupport": true
         }
     },
     "scripts": {
         "start": "electron .",
-        "dist-mac": "electron-builder -m"
+        "dist-mac": "electron-builder -m",
+        "rebuild": "npm rebuild --runtime=electron --target=5.0.13 --disturl=https://atom.io/download/atom-shell --abi=70"
     },
     "main": "mjs/main.js",
     "author": "William Roque",
@@ -25,7 +26,7 @@
     },
     "dependencies": {
         "fix-path": "^2.1.0",
-        "iohook": "file:iohook",
+        "iohook": "^0.6.6",
         "robotjs": "^0.6.0"
     },
     "iohook": {
