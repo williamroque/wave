@@ -410,7 +410,8 @@ ioHook.on('mousemove', e => {
     }
 });
 ioHook.on('keydown', e => {
-    if (e.keycode === 56) {
+    console.log(e.keycode);
+    if (e.keycode === 56 || e.keycode === 3640) {
         gesture = new Gesture(!glyphSet);
 
         if (!glyphSet) {
@@ -424,7 +425,7 @@ ioHook.on('keydown', e => {
     }
 });
 ioHook.on('keyup', e => {
-    if (e.keycode === 56) {
+    if (e.keycode === 56 || e.keycode === 3640) {
         if (glyphSet) {
             gesture.addDuplicates();
             gesture.cleanMovements();
@@ -458,7 +459,6 @@ ioHook.on('keyup', e => {
                         const modifiers = sequence.slice(0, sequence.length - 1);
                         const key = sequence[sequence.length - 1];
 
-                        console.log(key, modifiers);
                         robot.keyTap(key, modifiers);
                         modifiers.forEach(m => robot.keyToggle(m, 'up'));
                     }
@@ -470,7 +470,7 @@ ioHook.on('keyup', e => {
         }
 
         gesture = undefined;
-    } else if (e.keycode === 42 && e.altKey) {
+    } else if ((e.keycode === 42 || e.keycode === 54) && e.altKey) {
         if (shiftWindow) {
             shiftWindow = false;
             clearTimeout(shiftWindowTimeout);
