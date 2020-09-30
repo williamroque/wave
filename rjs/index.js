@@ -410,7 +410,6 @@ ioHook.on('mousemove', e => {
     }
 });
 ioHook.on('keydown', e => {
-    console.log(e.keycode);
     if (e.keycode === 56 || e.keycode === 3640) {
         gesture = new Gesture(!glyphSet);
 

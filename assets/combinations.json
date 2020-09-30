@@ -1,0 +1,48 @@
+{
+    "general": {
+        "UP+RIGHT+DOWN+RIGHT": ["command", "space"],
+        "DOWN+RIGHT": ["command", "w"],
+        "LEFT+DOWN+RIGHT+UP+DOWN": ["command", "q"],
+        "UP+RIGHT+DOWN+LEFT+RIGHT": ["command", "shift", "r"],
+        "UP+RIGHT+DOWN": ["command", "m"],
+        "RIGHT+UP": ["command", "tab"],
+        "RIGHT+LEFT": ["control", "tab"],
+        "LEFT+RIGHT": ["control", "shift", "tab"],
+        "DOWN": ["command", "t"],
+        "UP": ["command", "n"],
+        "RIGHT+UP+LEFT+DOWN": ["command", "control", "q"],
+        "RIGHT": ["command", "]"],
+        "LEFT": ["command", "["],
+        "DOWN+RIGHT+LEFT": ["command", "l"],
+        "DOWN+RIGHT+DOWN": ["command", ","],
+        "DOWN+RIGHT+UP": ["command", "h"],
+        "UP+DOWN": ["command", "r"],
+        "UP+RIGHT+LEFT": ["control", "command", "f"],
+        "RIGHT+UP+DOWN": ["command", "`"],
+        "RIGHT+DOWN+LEFT": ["control", "c"],
+        "LEFT+DOWN+RIGHT": ["command", "c"],
+        "UP+RIGHT+DOWN+LEFT": ["command", "v"],
+        "DOWN+RIGHT+UP+DOWN": ["escape"]
+    },
+    "iTerm2": {
+        "UP+RIGHT+LEFT": ["command", "enter"]
+    },
+    "Finder": {
+        "LEFT+DOWN+RIGHT+DOWN+LEFT": ["control", "alt", "command", "1"],
+        "UP+DOWN": ["alt", "command", "i"],
+        "UP+RIGHT+DOWN+LEFT": ["command", "shift", "n"]
+    },
+    "Vivaldi": {
+        "LEFT+DOWN+RIGHT": ["command", "shift", "t"],
+        "UP+RIGHT+DOWN+LEFT": ["command", "shift", "n"]
+    },
+    "Safari": {
+        "LEFT+DOWN+RIGHT": ["command", "shift", "t"],
+        "UP+RIGHT+DOWN+LEFT": ["command", "shift", "n"]
+    },
+    "zoom.us": {
+        "UP+RIGHT+LEFT": ["command", "shift", "f"],
+        "UP+RIGHT+DOWN": ["command", "shift", "a"],
+        "DOWN+RIGHT+UP": ["command", "shift", "v"]
+    }
+}
