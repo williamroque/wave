@@ -386,7 +386,7 @@ class Gesture {
     }
 }
 
-let shiftWindow = false;
+let shiftWindow = false, requiresControl = false;
 let gesture, shiftWindowTimeout, glyphSet;
 
 ioHook.on('mousemove', e => {
@@ -410,7 +410,7 @@ ioHook.on('mousemove', e => {
     }
 });
 ioHook.on('keydown', e => {
-    if (e.keycode === 56 || e.keycode === 3640) {
+    if (e.keycode === 56 && (!requiresControl || e.ctrlKey) || e.keycode === 3640) {
         gesture = new Gesture(!glyphSet);
 
         if (!glyphSet) {
@@ -424,7 +424,7 @@ ioHook.on('keydown', e => {
     }
 });
 ioHook.on('keyup', e => {
-    if (e.keycode === 56 || e.keycode === 3640) {
+    if ((e.keycode === 56 || e.keycode === 3640) && gesture) {
         if (glyphSet) {
             gesture.addDuplicates();
             gesture.cleanMovements();
@@ -496,6 +496,8 @@ ioHook.on('keyup', e => {
             spawn('open', ['-a', 'Sublime Text', settingsPath]);
         } else if (command === 'quit') {
             app.quit();
+        } else if (command === 'toggle') {
+            requiresControl = !requiresControl;
         }
 
         hideWindow();
