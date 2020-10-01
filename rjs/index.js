@@ -251,8 +251,9 @@ class Gesture {
         const xCenter = (x1 + x2) / 2;
         const yCenter = (y1 + y2) / 2;
 
-        const xWalk = new Set([0]);
-        const yWalk = new Set([0]);
+        const xs = [0];
+        const ys = [0];
+
         let x = 0;
         let y = 0;
 
@@ -261,66 +262,33 @@ class Gesture {
             x += movementDirection[0];
             y += movementDirection[1];
             
-            xWalk.add(x);
-            yWalk.add(y);
+            xs.push(x);
+            ys.push(y);
         });
 
-        const xMax = Math.max(...xWalk);
-        const xMin = Math.min(...xWalk);
-        const yMax = Math.max(...yWalk);
-        const yMin = Math.min(...yWalk);
+        const xMax = Math.max(...xs);
+        const xMin = Math.min(...xs);
+        const xMed = (xMax + xMin) / 2;
 
-        if (
-            xMax > maxGestureRadius
-            || xMin < -maxGestureRadius
-            || yMax > maxGestureRadius
-            || yMin < -maxGestureRadius
-        ) return;
+        const yMax = Math.max(...ys);
+        const yMin = Math.min(...ys);
+        const yMed = (yMax + yMin) / 2;
 
-        let lineLength = Math.min(x2 - x1, y2 - y1) / Math.max(
-            Math.abs(xMax),
-            Math.abs(xMin),
-            Math.abs(yMax),
-            Math.abs(yMin)
+        const lineLength = Math.min(x2 - x1, y2 - y1) / Math.max(
+            xMax - xMin,
+            yMax - yMin
         );
 
-        let signChanges = false;
-        if (
-            Math.sign(xMax) !== Math.sign(xMin) && xMax !== 0 && xMin !== 0
-            || Math.sign(yMax) !== Math.sign(yMin) && yMax !== 0 && yMin !== 0
-        ) {
-            lineLength /= 2;
-            signChanges = true;
-        }
-
-        x = x1, y = y1;
-
         ctx.beginPath();
-        if (signChanges) {
-            x = xCenter;
-            y = yCenter;
-        } else {
-            if (combination[0] === 'UP' || combination[1] === 'UP' && combination[0] !== 'DOWN') {
-                y = y2;
-            }
-            if (combination[0] === 'LEFT' || combination[1] === 'LEFT' && combination[0] !== 'RIGHT') {
-                x = x2;
-            }
+        for (let i = 0; i < xs.length; i++) {
+            xs[i] = (xs[i] - xMed) * lineLength + xCenter;
+            ys[i] = (ys[i] - yMed) * lineLength + yCenter;
+
+            ctx.lineTo(xs[i], ys[i]);
         }
-        ctx.moveTo(x, y);
+        ctx.stroke();
 
-        combination.forEach((movement, i) => {
-            const movementDirection = Gesture.getMovementDirection(movement);
-            x += movementDirection[0] * lineLength;
-            y += movementDirection[1] * lineLength;
-
-            ctx.lineTo(x, y);
-            ctx.stroke();
-
-            if (i === combination.length - 1) {
-                ctx.fillRect(x - 6, y - 6, 12, 12);
-            }
-        });
+        ctx.fillRect(xs[xs.length - 1] - 6, ys[ys.length - 1] - 6, 12, 12);
     }
 
     static renderGlyphs(glyphSet, ctx) {
@@ -338,7 +306,6 @@ class Gesture {
         const glyphCenter = (glyphSize - border * 2) / 2;
 
         ctx.lineWidth = Math.ceil(ctx.lineWidth * glyphSize / Math.min(width, height));
-
 
         glyphSet.forEach((glyph, i) => {
             if (glyph & UPPER) {
