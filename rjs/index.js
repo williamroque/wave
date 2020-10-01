@@ -124,36 +124,36 @@ class Gesture {
         this.moveCount++;
     }
 
-    addDuplicates() {
-        for (let i = 1; i < this.movements.length; i++) {
-            if (this.movements[i - 1][0] === this.movements[i][0]) {
-                this.movements.splice(i - 1, 2, [
-                    this.movements[i][0],
-                    this.movements[i - 1][1] + this.movements[i][1]
+    addDuplicates(movements=this.movements) {
+        for (let i = 1; i < movements.length; i++) {
+            if (movements[i - 1][0] === movements[i][0]) {
+                movements.splice(i - 1, 2, [
+                    movements[i][0],
+                    movements[i - 1][1] + movements[i][1]
                 ]);
-                return this.addDuplicates();
+                return this.addDuplicates(movements);
             }
         }
-        return this.movements;
+        return movements;
     }
 
-    cleanMovements() {
-        this.maxDiff = Math.max(...this.movements.map(m => Math.abs(m[1])));
-        const filteredMovements = this.movements.filter(m => Math.abs(m[1]) / this.maxDiff > diffThreshold);
+    cleanMovements(movements=this.movements) {
+        this.maxDiff = Math.max(...movements.map(m => Math.abs(m[1])));
+        const filteredMovements = movements.filter(m => Math.abs(m[1]) / this.maxDiff > diffThreshold);
 
-        if (JSON.stringify(filteredMovements) !== JSON.stringify(this.movements)) {
-            this.movements = filteredMovements;
+        if (JSON.stringify(filteredMovements) !== JSON.stringify(movements)) {
+            movements = filteredMovements;
 
-            this.addDuplicates();
-            return this.cleanMovements();
+            this.addDuplicates(movements);
+            return this.cleanMovements(movements);
         }
 
-        return this.movements;
+        return movements;
     }
 
-    getCombination(markDiacritics) {
+    getCombination(markDiacritics, movements=this.movements) {
         let combination = [];
-        this.movements.forEach(movement => {
+        movements.forEach(movement => {
             if (Math.abs(movement[1]) / this.maxDiff < diacriticThreshold && markDiacritics) {
                 movement[0] += 'd';
             }
@@ -396,12 +396,13 @@ ioHook.on('mousemove', e => {
         if (!glyphSet) {
             ipcRenderer.send('show-window');
 
-            gesture.addDuplicates();
-            gesture.cleanMovements();
+            let movements = JSON.parse(JSON.stringify(gesture.movements));
+            movements = gesture.addDuplicates(movements);
+            movements = gesture.cleanMovements(movements);
 
             const border = gestureCanvas.height * borderPerc;
             Gesture.renderCombination(
-                gesture.getCombination(false),
+                gesture.getCombination(false, movements),
                 gestureCanvas.width / 2 - gestureCanvas.height / 2 + border,
                 border,
                 gestureCanvas.width / 2 + gestureCanvas.height / 2 - border,
