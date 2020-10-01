@@ -25,6 +25,8 @@ app.on('ready', () => {
     mainWindow.window.setVisibleOnAllWorkspaces(true);
     mainWindow.window.setFullScreenable(false);
 
+    mainWindow.toggleDevTools();
+
     app.dock.hide();
 });
 

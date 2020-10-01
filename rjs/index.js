@@ -64,9 +64,20 @@ glyphMap.set(LOWER | LEFT | DOWNWARD | UPWARD, 'x');
 glyphMap.set(LEFT | LOWER | UPPER | DOWNWARD, 'y');
 glyphMap.set(LEFT | LOWER | RIGHT | DOWNWARD, 'z');
 
+let windowShowing = false;
 function hideWindow() {
-    ipcRenderer.send('hide-window');
-    app.hide();
+    if (windowShowing) {
+        ipcRenderer.send('hide-window');
+        app.hide();
+        windowShowing = false;
+    }
+}
+
+function showWindow() {
+    if (!windowShowing) {
+        ipcRenderer.send('show-window');
+        windowShowing = true;
+    }
 }
 
 class Gesture {
@@ -245,6 +256,8 @@ class Gesture {
     }
 
     static renderCombination(combination, x1, y1, x2, y2, ctx) {
+        if (combination.join('+') === this._lastRendered) return;
+
         ctx.lineWidth = 6;
         ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 
@@ -289,6 +302,8 @@ class Gesture {
         ctx.stroke();
 
         ctx.fillRect(xs[xs.length - 1] - 6, ys[ys.length - 1] - 6, 12, 12);
+
+        this._lastRendered = combination.join('+');
     }
 
     static renderGlyphs(glyphSet, ctx) {
@@ -361,7 +376,7 @@ ioHook.on('mousemove', e => {
         gesture.registerMovement(e.x, e.y);
 
         if (!glyphSet) {
-            ipcRenderer.send('show-window');
+            showWindow();
 
             let movements = JSON.parse(JSON.stringify(gesture.movements));
             movements = gesture.addDuplicates(movements);
@@ -402,6 +417,9 @@ ioHook.on('keyup', e => {
                 Gesture.renderGlyphs(glyphSet, ctx);
             }
         } else {
+            gesture.addDuplicates();
+            gesture.cleanMovements();
+
             const combination = gesture.getCombination(false).join('+');
 
             if (combination === settingsCombination) {
@@ -447,7 +465,8 @@ ioHook.on('keyup', e => {
                 ctx.clearRect(0, 0, gestureCanvas.width, gestureCanvas.height);
             } else {
                 glyphSet = [];
-                ipcRenderer.send('show-window');
+
+                showWindow();
             }
         } else {
             shiftWindow = true;
