@@ -394,6 +394,8 @@ ioHook.on('mousemove', e => {
         gesture.registerMovement(e.x, e.y);
 
         if (!glyphSet) {
+            ipcRenderer.send('show-window');
+
             gesture.addDuplicates();
             gesture.cleanMovements();
 
@@ -412,10 +414,6 @@ ioHook.on('mousemove', e => {
 ioHook.on('keydown', e => {
     if (e.keycode === 56 && (!requiresControl || e.ctrlKey) || e.keycode === 3640) {
         gesture = new Gesture(!glyphSet);
-
-        if (!glyphSet) {
-            ipcRenderer.send('show-window');
-        }
     } else if (e.keycode === 14) {
         if (glyphSet && glyphSet.length > 0) {
             glyphSet.pop();
