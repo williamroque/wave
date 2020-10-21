@@ -64,7 +64,7 @@ glyphMap.set(LOWER | LEFT | DOWNWARD | UPWARD, 'x');
 glyphMap.set(LEFT | LOWER | UPPER | DOWNWARD, 'y');
 glyphMap.set(LEFT | LOWER | RIGHT | DOWNWARD, 'z');
 
-let windowShowing = false;
+let windowShowing = false, showsWindow = true;
 function hideWindow() {
     if (windowShowing) {
         ipcRenderer.send('hide-window');
@@ -73,8 +73,8 @@ function hideWindow() {
     }
 }
 
-function showWindow() {
-    if (!windowShowing) {
+function showWindow(overridesOption) {
+    if (!windowShowing && (overridesOption || showsWindow)) {
         ipcRenderer.send('show-window');
         windowShowing = true;
     }
@@ -376,7 +376,7 @@ ioHook.on('mousemove', e => {
         gesture.registerMovement(e.x, e.y);
 
         if (!glyphSet) {
-            showWindow();
+            showWindow(false);
 
             let movements = JSON.parse(JSON.stringify(gesture.movements));
             movements = gesture.addDuplicates(movements);
@@ -466,7 +466,7 @@ ioHook.on('keyup', e => {
             } else {
                 glyphSet = [];
 
-                showWindow();
+                showWindow(true);
             }
         } else {
             shiftWindow = true;
@@ -483,6 +483,8 @@ ioHook.on('keyup', e => {
             app.quit();
         } else if (command === 'toggle') {
             requiresControl = !requiresControl;
+        } else if (command === 'window') {
+            showsWindow = !showsWindow;
         }
 
         hideWindow();
