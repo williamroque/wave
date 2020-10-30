@@ -28,6 +28,8 @@ const diffThreshold = .15;
 const diacriticThreshold = .5;
 const moveCycle = 5;
 const maxGestureRadius = 2;
+const scrollSpeedFactor = 1/5;
+const maxScroll = 300;
 
 const UPPER = 1;
 const RIGHT = 2;
@@ -368,14 +370,33 @@ class Gesture {
     }
 }
 
-let shiftWindow = false, requiresControl = false;
-let gesture, shiftWindowTimeout, glyphSet;
+let shiftWindow = false, requiresControl = false, isScrollMovement = false;
+let gesture, shiftWindowTimeout, glyphSet, scrollInterval;
+let scrollSpeed = 1;
 
 ioHook.on('mousemove', e => {
     if (typeof gesture !== 'undefined') {
         gesture.registerMovement(e.x, e.y);
 
-        if (!glyphSet) {
+        if (isScrollMovement) {
+            let movements = JSON.parse(JSON.stringify(gesture.movements));
+            movements = gesture.addDuplicates(movements);
+            movements = gesture.cleanMovements(movements);
+            movements = movements.filter(m => m[0] !== 'LEFT' && m[0] !== 'RIGHT');
+
+            if (movements.length < 1) return;
+
+            let totalMovement = movements.reduce((a, b) => a + (b === 'UP' ? 1 : -1) * b[1], 0);
+            totalMovement = Math.min(Math.abs(totalMovement), maxScroll) * Math.sign(totalMovement);
+
+            scrollVelocity = totalMovement * scrollSpeedFactor;
+
+            if (!scrollInterval) {
+                scrollInterval = setInterval(() => {
+                    robot.scrollMouse(0, scrollVelocity);
+                }, 10);
+            }
+        } else if (!glyphSet) {
             showWindow(false);
 
             let movements = JSON.parse(JSON.stringify(gesture.movements));
@@ -394,6 +415,7 @@ ioHook.on('mousemove', e => {
         }
     }
 });
+
 ioHook.on('keydown', e => {
     if (e.keycode === 56 && (!requiresControl || e.ctrlKey) || e.keycode === 3640) {
         gesture = new Gesture(!glyphSet);
@@ -402,8 +424,12 @@ ioHook.on('keydown', e => {
             glyphSet.pop();
             Gesture.renderGlyphs(glyphSet, ctx);
         }
+    } else if (e.ctrlKey) {
+        gesture = new Gesture(true);
+        isScrollMovement = true;
     }
 });
+
 ioHook.on('keyup', e => {
     if ((e.keycode === 56 || e.keycode === 3640) && gesture) {
         if (glyphSet) {
@@ -491,6 +517,12 @@ ioHook.on('keyup', e => {
         ctx.clearRect(0, 0, gestureCanvas.width, gestureCanvas.height);
 
         glyphSet = undefined;
+    } else if (e.ctrlKey) {
+        isScrollMovement = false;
+
+        clearInterval(scrollInterval);
+        scrollInterval = null;
+        gesture = undefined;
     }
 });
 ioHook.start();
