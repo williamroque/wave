@@ -7,6 +7,7 @@ fixPath();
 
 let mainWindow;
 
+app.commandLine.appendSwitch("disable-renderer-backgrounding");
 app.on('ready', () => {
     mainWindow = new Window({
         icon: '../assets/icon.png',
