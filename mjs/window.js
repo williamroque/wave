@@ -8,7 +8,11 @@ class Window {
         this.properties = properties;
         this.file = file;
 
-        this.properties.webPreferences = { nodeIntegration: true };
+        this.properties.webPreferences = {
+            nodeIntegration: true,
+            'page-visibility': true,
+            backgroundThrottling: false
+        };
 
         this.dispatchOnReady = dispatchOnReady;
 
