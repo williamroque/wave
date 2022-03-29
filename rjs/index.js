@@ -19,8 +19,8 @@ const borderPerc = .1;
 gestureCanvas.width = window.innerWidth - borderPerc * window.innerHeight * 2;
 gestureCanvas.height = window.innerHeight;
 
-ctx.fillStyle = '#BCCCDC';
-ctx.strokeStyle = '#486581';
+ctx.fillStyle = '#fdf4c1';
+ctx.strokeStyle = '#fdf4c1';
 ctx.lineCap = 'round';
 
 const equalityThreshold = .6;
